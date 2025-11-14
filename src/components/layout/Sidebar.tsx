@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { X, LayoutDashboard, Package, ClipboardList, FileText, Settings, WifiOff, AlertTriangle } from 'lucide-react';
+import { X, LayoutDashboard, Package, ClipboardList, FileText, Settings, WifiOff, AlertTriangle, Users } from 'lucide-react';
 import { useNetwork } from '../../context/NetworkContext';
 import { useInventory } from '../../context/InventoryContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,18 +13,20 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { isOnline, pendingSyncCount } = useNetwork();
   const { getProductsBelowStock, getProductsExpiringWithinDays } = useInventory();
-  
+  const { hasPermission } = useAuth();
+
   // Get alert count
   const lowStockCount = getProductsBelowStock().length;
   const expiringCount = getProductsExpiringWithinDays(30).length;
-  
+
   const navItems = [
-    { name: 'Menú Principal', path: '/', icon: <LayoutDashboard size={20} /> },
-    { name: 'Inventario', path: '/inventory', icon: <Package size={20} /> },
-    { name: 'Transacciones', path: '/transactions', icon: <ClipboardList size={20} /> },
-    { name: 'Reportes', path: '/reports', icon: <FileText size={20} /> },
-    { name: 'Configuración', path: '/settings', icon: <Settings size={20} /> },
-  ];
+    { name: 'Menú Principal', path: '/', icon: <LayoutDashboard size={20} />, adminOnly: false },
+    { name: 'Inventario', path: '/inventory', icon: <Package size={20} />, adminOnly: false },
+    { name: 'Transacciones', path: '/transactions', icon: <ClipboardList size={20} />, adminOnly: false },
+    { name: 'Reportes', path: '/reports', icon: <FileText size={20} />, adminOnly: false },
+    { name: 'Usuarios', path: '/users', icon: <Users size={20} />, adminOnly: true },
+    { name: 'Configuración', path: '/settings', icon: <Settings size={20} />, adminOnly: false },
+  ].filter(item => !item.adminOnly || hasPermission('edit'));
   
   return (
     <>
