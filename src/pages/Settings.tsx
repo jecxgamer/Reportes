@@ -4,6 +4,7 @@ import { useInventory } from '../context/InventoryContext';
 import { Database, WifiOff, RefreshCw, Download, HardDrive, Upload, Book } from 'lucide-react';
 import CurrencySettings from '../components/settings/CurrencySettings';
 import UserManual from '../components/settings/UserManual';
+import UserManagement from '../components/settings/UserManagement';
 import { useAuth } from '../context/AuthContext';
 
 const Settings: React.FC = () => {
@@ -116,10 +117,14 @@ const Settings: React.FC = () => {
             <CurrencySettings />
           </div>
         )}
-        
-        
-        
-        
+
+        {/* User Management - Only for Admin */}
+        {currentUser?.role === 'admin' && (
+          <div className="mb-6">
+            <UserManagement />
+          </div>
+        )}
+
         {/* App Installation */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="border-b border-gray-200">
